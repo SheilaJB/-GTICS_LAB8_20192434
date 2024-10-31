@@ -66,17 +66,27 @@ public class StudentController {
     }
 
     //Actualizar
-    @PutMapping(value = {"", "/"}, consumes = {MediaType.APPLICATION_FORM_URLENCODED_VALUE})
-    public ResponseEntity<HashMap<String, Object>> modificarEstudiante(StudentsEntity studentsEntity){
+    @PutMapping(value = {"", "/studentAct"}, consumes = {MediaType.APPLICATION_FORM_URLENCODED_VALUE})
+    public ResponseEntity<HashMap<String, Object>> modificarEstudiante(@RequestBody  StudentsEntity students){
         HashMap<String, Object> response = new HashMap<>();
 
-        if(studentsEntity.getId() >0){
-            Optional<StudentsEntity> studentsEntityOptional = studentsRepository.findById(studentsEntity.getId());
-            if(studentsEntityOptional.isPresent()){
-                StudentsEntity studentsEntity1 = studentsEntityOptional.get();
-
-                if()
+        if( students.getId()>0){
+            Optional<StudentsEntity> opt = studentsRepository.findById(students.getId());
+            if(opt.isPresent()){
+                studentsRepository.save(students);
+                response.put("id", students.getId());
+                response.put("nombre", students.getNombre());
+                response.put("GPA", "actualizado");
+                return ResponseEntity.ok(response);
+            }else {
+                response.put("id", "no se encuentra registrado");
+                response.put("GPA", "error");
+                return ResponseEntity.badRequest().body(response);
             }
+        }else{
+            response.put("GPA", "error");
+            response.put("id", "no se encuentra registrado");
+            return ResponseEntity.badRequest().body(response);
         }
     }
 
